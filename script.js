@@ -6,7 +6,7 @@ const pastTableBody = document.getElementById('pastTableBody');
 const futureTableBody = document.getElementById('futureTableBody');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '1.2';
+const VERSION = '1.3';
 
 // State
 let currentLang = navigator.language.startsWith('da') ? 'da' : 'en';
