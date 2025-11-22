@@ -5,6 +5,9 @@ const langToggle = document.getElementById('langToggle');
 const pastTableBody = document.getElementById('pastTableBody');
 const futureTableBody = document.getElementById('futureTableBody');
 
+// Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
+const VERSION = '1.2';
+
 // State
 let currentLang = navigator.language.startsWith('da') ? 'da' : 'en';
 console.log('Detected browser language:', navigator.language, '-> App language:', currentLang);
@@ -22,7 +25,7 @@ const FORM_ENTRIES = {
 // Translations
 const translations = {
     en: {
-        title: 'SerialDateConverter',
+        title: `Serial Date Converter v${VERSION}`,
         subtitle: 'Easily convert between formats',
         labelExcel: 'Excel Serial Number',
         labelDate: 'Date & Time',
@@ -46,7 +49,7 @@ const translations = {
         refEndOfNextYear: 'End of next year'
     },
     da: {
-        title: 'SerialDateConverter',
+        title: `Serial Date Converter v${VERSION}`,
         subtitle: 'Konverter nemt mellem formater',
         labelExcel: 'Excel Serienummer',
         labelDate: 'Dato & Tid',
