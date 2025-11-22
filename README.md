@@ -1,38 +1,35 @@
 # Serial Date Converter
 
-A Progressive Web App (PWA) for converting between Excel serial date numbers and human-readable dates.
+Velkommen til **Serial Date Converter**!
 
-## Features
+Dette er en gratis web-app, der gør det nemt at konvertere mellem Excel serienumre (f.eks. `45614.5`) og almindelige datoer/tidspunkter.
 
-*   **Two-way Conversion**: Convert dates to Excel serial numbers and vice versa.
-*   **Time Support**: Handles fractional serial numbers for precise time conversion.
-*   **Localization**: Supports English and Danish (switchable UI).
-*   **Reference Table**: Shows "Past" and "Future" relative dates (e.g., "Today", "Next Monday") with their Excel serials.
-*   **PWA**: Installable on mobile and desktop with offline support.
-*   **Dark Mode**: Modern, clean UI with a dark theme.
+🔗 **Åbn appen her:** [https://mcronberg.github.io/SerialDateConverter/](https://mcronberg.github.io/SerialDateConverter/)
 
-## Installation & Usage
+## Sådan installerer du appen (PWA)
 
-### Running Locally
+Du kan installere appen direkte på din telefon eller computer, så den virker ligesom en rigtig app (også uden internet).
 
-1.  Clone the repository.
-2.  Open `index.html` in your browser.
-    *   *Note*: Service Worker features (PWA installation) require the app to be served over HTTP/HTTPS, not `file://`.
-    *   We recommend using the "Live Server" extension in VS Code or running a simple python server:
-        ```bash
-        python -m http.server
-        ```
+### 📱 iPhone / iPad (iOS)
+1. Åbn linket i **Safari**.
+2. Tryk på **Del-knappen** (firkant med pil op) i bunden.
+3. Scroll ned og vælg **"Føj til hjemmeskærm"**.
+4. Tryk på **Tilføj**.
 
-### Deploying to GitHub Pages
+### 📱 Android (Chrome)
+1. Åbn linket i **Chrome**.
+2. Tryk på menuen (tre prikker) i toppen.
+3. Vælg **"Installer app"** eller **"Føj til startskærm"**.
+4. Bekræft installationen.
 
-1.  Push this repository to GitHub.
-2.  Go to **Settings** > **Pages**.
-3.  Under **Source**, select `main` branch and `/ (root)` folder.
-4.  Click **Save**.
-5.  Your app will be available at `https://<username>.github.io/<repository-name>/`.
+### 💻 Computer (Chrome / Edge)
+1. Åbn linket i din browser.
+2. Kig efter et lille **installations-ikon** (en skærm med en pil) i højre side af adressebaren.
+3. Klik på det og vælg **Installer**.
 
-## Technologies
+## Sådan bruger du appen
 
-*   HTML5
-*   Tailwind CSS (via CDN)
-*   JavaScript (Vanilla)
+*   **Dato til Excel:** Vælg en dato og et tidspunkt i de to felter øverst til venstre. Excel-tallet vises automatisk.
+*   **Excel til Dato:** Indtast et tal (f.eks. `45000`) i feltet "Excel Serienummer". Datoen vises automatisk.
+*   **Sprog:** Skift mellem Dansk og Engelsk ved at trykke på knappen "DA/EN" i hjørnet.
+*   **Hurtig Reference:** Tabellen i bunden viser nyttige datoer som "I dag", "I morgen" og "Næste mandag" med deres tilhørende Excel-numre.
