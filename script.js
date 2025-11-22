@@ -9,7 +9,11 @@ const futureTableBody = document.getElementById('futureTableBody');
 const VERSION = '1.3';
 
 // State
-let currentLang = navigator.language.startsWith('da') ? 'da' : 'en';
+let currentLang = 'en';
+if (navigator.language.startsWith('da')) currentLang = 'da';
+else if (navigator.language.startsWith('no') || navigator.language.startsWith('nb') || navigator.language.startsWith('nn')) currentLang = 'no';
+else if (navigator.language.startsWith('sv')) currentLang = 'sv';
+else if (navigator.language.startsWith('de')) currentLang = 'de';
 console.log('Detected browser language:', navigator.language, '-> App language:', currentLang);
 
 // Analytics Config
@@ -71,6 +75,78 @@ const translations = {
         refEndOfYear: 'Slutningen af året',
         refStartOfNextYear: 'Starten af næste år',
         refEndOfNextYear: 'Slutningen af næste år'
+    },
+    sv: {
+        title: `Serial Date Converter v${VERSION}`,
+        subtitle: 'Konvertera enkelt mellan format',
+        labelExcel: 'Excel Serienummer',
+        labelDate: 'Datum & Tid',
+        quickReference: 'Snabbreferens',
+        colDescription: 'Beskrivning',
+        colExcel: 'Excel',
+        colDate: 'Datum',
+        headerPast: 'Förflutet',
+        headerFuture: 'Framtid',
+        refToday: 'Idag',
+        refLastMonday: 'Senaste måndag',
+        refWeekAgo: 'För en vecka sedan',
+        refMonthAgo: 'För en månad sedan',
+        refStartOfYear: 'Årets början',
+        refTomorrow: 'Imorgon',
+        refNextMonday: 'Nästa måndag',
+        refInWeek: 'Om en vecka',
+        refInMonth: 'Om en månad',
+        refEndOfYear: 'Årets slut',
+        refStartOfNextYear: 'Nästa års början',
+        refEndOfNextYear: 'Nästa års slut'
+    },
+    de: {
+        title: `Serial Date Converter v${VERSION}`,
+        subtitle: 'Einfach zwischen Formaten konvertieren',
+        labelExcel: 'Excel Seriennummer',
+        labelDate: 'Datum & Uhrzeit',
+        quickReference: 'Schnellreferenz',
+        colDescription: 'Beschreibung',
+        colExcel: 'Excel',
+        colDate: 'Datum',
+        headerPast: 'Vergangenheit',
+        headerFuture: 'Zukunft',
+        refToday: 'Heute',
+        refLastMonday: 'Letzter Montag',
+        refWeekAgo: 'Vor einer Woche',
+        refMonthAgo: 'Vor einem Monat',
+        refStartOfYear: 'Jahresbeginn',
+        refTomorrow: 'Morgen',
+        refNextMonday: 'Nächster Montag',
+        refInWeek: 'In einer Woche',
+        refInMonth: 'In einem Monat',
+        refEndOfYear: 'Jahresende',
+        refStartOfNextYear: 'Beginn nächstes Jahr',
+        refEndOfNextYear: 'Ende nächstes Jahr'
+    },
+    no: {
+        title: `Serial Date Converter v${VERSION}`,
+        subtitle: 'Konverter enkelt mellom formater',
+        labelExcel: 'Excel Serienummer',
+        labelDate: 'Dato & Tid',
+        quickReference: 'Hurtigreferanse',
+        colDescription: 'Beskrivelse',
+        colExcel: 'Excel',
+        colDate: 'Dato',
+        headerPast: 'Fortid',
+        headerFuture: 'Fremtid',
+        refToday: 'I dag',
+        refLastMonday: 'Siste mandag',
+        refWeekAgo: 'For en uke siden',
+        refMonthAgo: 'For en måned siden',
+        refStartOfYear: 'Årets begynnelse',
+        refTomorrow: 'I morgen',
+        refNextMonday: 'Neste mandag',
+        refInWeek: 'Om en uke',
+        refInMonth: 'Om en måned',
+        refEndOfYear: 'Årets slutt',
+        refStartOfNextYear: 'Neste års begynnelse',
+        refEndOfNextYear: 'Neste års slutt'
     }
 };
 
@@ -164,14 +240,38 @@ excelInput.addEventListener('input', (e) => {
 dateInput.addEventListener('input', updateFromDateInputs);
 timeInput.addEventListener('input', updateFromDateInputs);
 
-langToggle.addEventListener('click', () => {
-    currentLang = currentLang === 'en' ? 'da' : 'en';
-    updateLanguage();
-    logToGoogle(`LanguageSwitch:${currentLang}`);
+const langToggleBtn = document.getElementById('langToggle');
+const langMenu = document.getElementById('langMenu');
+const currentLangSpan = document.getElementById('currentLang');
+
+langToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langMenu.classList.toggle('hidden');
+});
+
+document.addEventListener('click', () => {
+    langMenu.classList.add('hidden');
+});
+
+document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentLang = e.target.getAttribute('data-lang');
+        updateLanguage();
+        logToGoogle(`LanguageSwitch:${currentLang}`);
+        langMenu.classList.add('hidden');
+    });
 });
 
 function updateLanguage() {
-    langToggle.textContent = currentLang === 'en' ? 'DA' : 'EN';
+    const langMap = {
+        'en': '<span class="fi fi-gb"></span> EN',
+        'da': '<span class="fi fi-dk"></span> DA',
+        'no': '<span class="fi fi-no"></span> NO',
+        'sv': '<span class="fi fi-se"></span> SV',
+        'de': '<span class="fi fi-de"></span> DE'
+    };
+    currentLangSpan.innerHTML = langMap[currentLang];
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
