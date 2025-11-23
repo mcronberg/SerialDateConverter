@@ -6,7 +6,7 @@ const pastTableBody = document.getElementById('pastTableBody');
 const futureTableBody = document.getElementById('futureTableBody');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '1.4';
+const VERSION = '1.5';
 
 // State
 let currentLang = 'en';
