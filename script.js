@@ -224,12 +224,12 @@ function updateFromDateInputs() {
         const date = new Date(fullDateStr);
         const serial = getExcelSerial(date);
         excelInput.value = serial;
-        
+
         // Show copy button when value exists
         if (serial) {
             copyExcelBtn.classList.remove('opacity-0', 'pointer-events-none');
         }
-        
+
         debouncedLog('DateToExcel');
     } else {
         excelInput.value = '';
@@ -280,10 +280,10 @@ excelInput.addEventListener('input', (e) => {
 
         dateInput.value = `${year}-${month}-${day}`;
         timeInput.value = `${hours}:${minutes}`;
-        
+
         // Show copy button
         copyExcelBtn.classList.remove('opacity-0', 'pointer-events-none');
-        
+
         debouncedLog('ExcelToDate');
     } else {
         dateInput.value = '';
@@ -444,7 +444,7 @@ function renderTables() {
 async function copyToClipboard(text, button) {
     try {
         await navigator.clipboard.writeText(text);
-        
+
         // Visual feedback - change to checkmark
         const originalHTML = button.innerHTML;
         button.innerHTML = `
@@ -453,13 +453,13 @@ async function copyToClipboard(text, button) {
             </svg>
         `;
         button.classList.add('text-teal-600', 'dark:text-teal-400');
-        
+
         // Reset after 1.5s
         setTimeout(() => {
             button.innerHTML = originalHTML;
             button.classList.remove('text-teal-600', 'dark:text-teal-400');
         }, 1500);
-        
+
         logToGoogle('CopyToClipboard');
     } catch (error) {
         // Fallback for older browsers
