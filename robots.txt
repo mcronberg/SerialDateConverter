@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://serialdate.github.io/sitemap.xml
+Sitemap: https://mcronberg.github.io/SerialDate/sitemap.xml

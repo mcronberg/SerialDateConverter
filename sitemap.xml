@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://serialdate.github.io/</loc>
+        <loc>https://mcronberg.github.io/SerialDate/</loc>
         <lastmod>2025-11-23</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
-        <xhtml:link rel="alternate" hreflang="en" href="https://serialdate.github.io/" />
-        <xhtml:link rel="alternate" hreflang="da" href="https://serialdate.github.io/" />
-        <xhtml:link rel="alternate" hreflang="no" href="https://serialdate.github.io/" />
-        <xhtml:link rel="alternate" hreflang="sv" href="https://serialdate.github.io/" />
-        <xhtml:link rel="alternate" hreflang="de" href="https://serialdate.github.io/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://mcronberg.github.io/SerialDate/" />
+        <xhtml:link rel="alternate" hreflang="da" href="https://mcronberg.github.io/SerialDate/" />
+        <xhtml:link rel="alternate" hreflang="no" href="https://mcronberg.github.io/SerialDate/" />
+        <xhtml:link rel="alternate" hreflang="sv" href="https://mcronberg.github.io/SerialDate/" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://mcronberg.github.io/SerialDate/" />
     </url>
 </urlset>
