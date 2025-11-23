@@ -7,7 +7,7 @@ const futureTableBody = document.getElementById('futureTableBody');
 const copyExcelBtn = document.getElementById('copyExcelBtn');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '1.6';
+const VERSION = '1.7';
 
 // State
 let currentLang = 'en';
