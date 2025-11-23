@@ -13,7 +13,8 @@ A Progressive Web App (PWA) that converts between Excel serial date numbers and 
 
 **Core Components:**
 - Date ↔ Excel conversion utilities (`getExcelSerial()`, `getDateFromExcel()`)
-- Multi-language translation system with auto-detection
+- Multi-language translation system with auto-detection (EN, DA, NO, SV, DE)
+- Light/Dark theme with system preference detection
 - Reference tables showing relative dates (past/future)
 - Analytics via Google Forms (no-cors POST requests)
 
@@ -28,11 +29,18 @@ const serial = (utcDate - baseDate) / MS_PER_DAY;
 Always use UTC methods to avoid timezone issues.
 
 ### Version Synchronization
-**CRITICAL:** `VERSION` constant must match in both `script.js` and `sw.js`. Service worker cache invalidation depends on this:
+**CRITICAL:** When making ANY changes to the application, ALWAYS increment the `VERSION` constant in BOTH `script.js` and `sw.js`. Service worker cache invalidation depends on this - users will not see changes without a version bump:
 ```javascript
-const VERSION = '1.3'; // Update in BOTH files
+const VERSION = '1.4'; // ALWAYS update in BOTH files for ANY change
 const CACHE_NAME = `serial-date-converter-v${VERSION}`;
 ```
+
+### Theme System
+- Tailwind CSS `dark:` mode with class-based toggling
+- System preference detection: `window.matchMedia('(prefers-color-scheme: dark)')`
+- User preference stored in `localStorage.theme`
+- Light mode: slate-50 background with white cards
+- Dark mode: slate-950 background with slate-900 cards
 
 ### Internationalization Pattern
 - Translations stored in `translations` object keyed by lang code (`en`, `da`, `no`, `sv`, `de`)
@@ -82,7 +90,8 @@ python -m http.server 8000
 - Confirm analytics events fire without console errors
 
 ## Common Pitfalls
-- Forgetting to update VERSION in both files breaks cache invalidation
+- **CRITICAL:** Forgetting to update VERSION in BOTH `script.js` AND `sw.js` means users won't see changes (cache invalidation fails)
+- **REMEMBER:** Increment version for ANY change to HTML, CSS, or JS - service worker caches everything
 - Using local time instead of UTC causes timezone-dependent bugs
 - Service worker caching can hide changes during development (use DevTools → Application → Clear Storage)
 - Google Forms analytics requires exact entry field IDs (changes break logging)

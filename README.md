@@ -29,5 +29,6 @@ This tool is a Progressive Web App (PWA), enabling installation on your device f
 
 *   **Date to Excel**: Input a specific date and time to generate the corresponding Excel serial number.
 *   **Excel to Date**: Enter a serial number (e.g., `45614.5`) to retrieve the human-readable date and time.
-*   **Localization**: Switch the interface language between English and Danish via the toggle button.
+*   **Theme**: Toggle between light and dark mode (defaults to system preference).
+*   **Localization**: Switch the interface language between English, Danish, Norwegian, Swedish, and German via the toggle button.
 *   **Reference Table**: Consult the dynamic table for quick lookup of common past and future dates and their serial equivalents.

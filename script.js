@@ -6,7 +6,7 @@ const pastTableBody = document.getElementById('pastTableBody');
 const futureTableBody = document.getElementById('futureTableBody');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '1.3';
+const VERSION = '1.4';
 
 // State
 let currentLang = 'en';
@@ -14,7 +14,6 @@ if (navigator.language.startsWith('da')) currentLang = 'da';
 else if (navigator.language.startsWith('no') || navigator.language.startsWith('nb') || navigator.language.startsWith('nn')) currentLang = 'no';
 else if (navigator.language.startsWith('sv')) currentLang = 'sv';
 else if (navigator.language.startsWith('de')) currentLang = 'de';
-console.log('Detected browser language:', navigator.language, '-> App language:', currentLang);
 
 // Analytics Config
 const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScSDy6fpUQ6qRHeKkCBubmmWRaBYk62YSQTQgWi4OfjHip8yQ/formResponse';
@@ -30,7 +29,6 @@ const FORM_ENTRIES = {
 const translations = {
     en: {
         title: `Serial Date Converter v${VERSION}`,
-        subtitle: 'Easily convert between formats',
         labelExcel: 'Excel Serial Number',
         labelDate: 'Date & Time',
         quickReference: 'Quick Reference',
@@ -54,7 +52,6 @@ const translations = {
     },
     da: {
         title: `Serial Date Converter v${VERSION}`,
-        subtitle: 'Konverter nemt mellem formater',
         labelExcel: 'Excel Serienummer',
         labelDate: 'Dato & Tid',
         quickReference: 'Hurtig Reference',
@@ -78,7 +75,6 @@ const translations = {
     },
     sv: {
         title: `Serial Date Converter v${VERSION}`,
-        subtitle: 'Konvertera enkelt mellan format',
         labelExcel: 'Excel Serienummer',
         labelDate: 'Datum & Tid',
         quickReference: 'Snabbreferens',
@@ -102,7 +98,6 @@ const translations = {
     },
     de: {
         title: `Serial Date Converter v${VERSION}`,
-        subtitle: 'Einfach zwischen Formaten konvertieren',
         labelExcel: 'Excel Seriennummer',
         labelDate: 'Datum & Uhrzeit',
         quickReference: 'Schnellreferenz',
@@ -126,7 +121,6 @@ const translations = {
     },
     no: {
         title: `Serial Date Converter v${VERSION}`,
-        subtitle: 'Konverter enkelt mellom formater',
         labelExcel: 'Excel Serienummer',
         labelDate: 'Dato & Tid',
         quickReference: 'Hurtigreferanse',
@@ -152,29 +146,67 @@ const translations = {
 
 // Constants
 const MS_PER_DAY = 86400000;
+const DEBOUNCE_TIMEOUT_MS = 2000;
+const MIN_EXCEL_DATE = 1; // 1900-01-01
+const MAX_EXCEL_DATE = 2958465; // 9999-12-31
+const LOCALE_MAP = {
+    'en': 'en-GB',
+    'da': 'da-DK',
+    'no': 'nb-NO',
+    'sv': 'sv-SE',
+    'de': 'de-DE'
+};
 
 // Utils
 function getExcelSerial(dateObj) {
-    const utcDate = Date.UTC(
-        dateObj.getFullYear(),
-        dateObj.getMonth(),
-        dateObj.getDate(),
-        dateObj.getHours(),
-        dateObj.getMinutes(),
-        dateObj.getSeconds()
-    );
+    try {
+        if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+            throw new Error('Invalid date object');
+        }
 
-    const baseDate = Date.UTC(1899, 11, 30);
-    const diffTime = utcDate - baseDate;
-    const serial = diffTime / MS_PER_DAY;
+        const utcDate = Date.UTC(
+            dateObj.getFullYear(),
+            dateObj.getMonth(),
+            dateObj.getDate(),
+            dateObj.getHours(),
+            dateObj.getMinutes(),
+            dateObj.getSeconds()
+        );
 
-    return serial;
+        const baseDate = Date.UTC(1899, 11, 30);
+        const diffTime = utcDate - baseDate;
+        const serial = diffTime / MS_PER_DAY;
+
+        return serial;
+    } catch (error) {
+        return 0;
+    }
 }
 
 function getDateFromExcel(serial) {
-    const baseDate = Date.UTC(1899, 11, 30);
-    const targetTime = baseDate + (serial * MS_PER_DAY);
-    return new Date(targetTime);
+    try {
+        const numSerial = parseFloat(serial);
+
+        if (isNaN(numSerial)) {
+            throw new Error('Invalid serial number');
+        }
+
+        if (numSerial < MIN_EXCEL_DATE || numSerial > MAX_EXCEL_DATE) {
+            throw new Error('Serial number out of valid range (1-2958465)');
+        }
+
+        const baseDate = Date.UTC(1899, 11, 30);
+        const targetTime = baseDate + (numSerial * MS_PER_DAY);
+        const resultDate = new Date(targetTime);
+
+        if (isNaN(resultDate.getTime())) {
+            throw new Error('Invalid date calculation');
+        }
+
+        return resultDate;
+    } catch (error) {
+        return new Date();
+    }
 }
 
 function updateFromDateInputs() {
@@ -193,18 +225,22 @@ function updateFromDateInputs() {
 
 // Analytics Logger
 function logToGoogle(action) {
-    const data = new FormData();
-    data.append(FORM_ENTRIES.action, action);
-    data.append(FORM_ENTRIES.userAgent, navigator.userAgent);
-    data.append(FORM_ENTRIES.language, navigator.language);
-    data.append(FORM_ENTRIES.screen, `${window.screen.width}x${window.screen.height}`);
-    data.append(FORM_ENTRIES.appName, 'SerialDateConverter');
+    try {
+        const data = new FormData();
+        data.append(FORM_ENTRIES.action, action);
+        data.append(FORM_ENTRIES.userAgent, navigator.userAgent);
+        data.append(FORM_ENTRIES.language, navigator.language);
+        data.append(FORM_ENTRIES.screen, `${window.screen.width}x${window.screen.height}`);
+        data.append(FORM_ENTRIES.appName, 'SerialDateConverter');
 
-    fetch(GOOGLE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors', // Important to avoid CORS errors
-        body: data
-    }).catch(err => console.error('Logging failed', err));
+        fetch(GOOGLE_FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: data
+        }).catch(() => { });
+    } catch (error) {
+        // Silent fail - analytics should not break the app
+    }
 }
 
 // Debounce function to prevent spamming logs
@@ -213,7 +249,7 @@ function debouncedLog(action) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
         logToGoogle(action);
-    }, 2000); // Log after 2 seconds of inactivity
+    }, DEBOUNCE_TIMEOUT_MS);
 }
 
 // Event Listeners
@@ -246,32 +282,52 @@ const currentLangSpan = document.getElementById('currentLang');
 
 langToggleBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    langMenu.classList.toggle('hidden');
+    const isHidden = langMenu.classList.toggle('hidden');
+    langToggleBtn.setAttribute('aria-expanded', !isHidden);
 });
 
 document.addEventListener('click', () => {
-    langMenu.classList.add('hidden');
+    if (!langMenu.classList.contains('hidden')) {
+        langMenu.classList.add('hidden');
+        langToggleBtn.setAttribute('aria-expanded', 'false');
+    }
 });
 
 document.querySelectorAll('.lang-option').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        currentLang = e.target.getAttribute('data-lang');
-        updateLanguage();
-        logToGoogle(`LanguageSwitch:${currentLang}`);
-        langMenu.classList.add('hidden');
+        const selectedLang = btn.getAttribute('data-lang');
+        if (selectedLang) {
+            currentLang = selectedLang;
+            updateLanguage();
+            logToGoogle(`LanguageSwitch:${currentLang}`);
+            langMenu.classList.add('hidden');
+            langToggleBtn.setAttribute('aria-expanded', 'false');
+        }
     });
 });
 
 function updateLanguage() {
     const langMap = {
-        'en': '<span class="fi fi-gb"></span> EN',
-        'da': '<span class="fi fi-dk"></span> DA',
-        'no': '<span class="fi fi-no"></span> NO',
-        'sv': '<span class="fi fi-se"></span> SV',
-        'de': '<span class="fi fi-de"></span> DE'
+        'en': { flag: 'fi-gb', text: 'EN' },
+        'da': { flag: 'fi-dk', text: 'DA' },
+        'no': { flag: 'fi-no', text: 'NO' },
+        'sv': { flag: 'fi-se', text: 'SV' },
+        'de': { flag: 'fi-de', text: 'DE' }
     };
-    currentLangSpan.innerHTML = langMap[currentLang];
+
+    // Safe DOM manipulation without innerHTML
+    const flagSpan = currentLangSpan.querySelector('.fi');
+    const textNode = currentLangSpan.childNodes[currentLangSpan.childNodes.length - 1];
+
+    if (flagSpan && langMap[currentLang]) {
+        flagSpan.className = `fi ${langMap[currentLang].flag}`;
+        textNode.textContent = ` ${langMap[currentLang].text}`;
+    }
+
+    // Update aria-expanded attribute
+    const langToggleBtn = document.getElementById('langToggle');
+    langToggleBtn.setAttribute('aria-expanded', 'false');
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -313,15 +369,29 @@ function getRelativeDate(type) {
 function createRow(key) {
     const date = getRelativeDate(key);
     const excel = getExcelSerial(date);
-    const dateStr = date.toLocaleDateString(currentLang === 'da' ? 'da-DK' : 'en-GB');
+    const locale = LOCALE_MAP[currentLang] || 'en-GB';
+    const dateStr = date.toLocaleDateString(locale);
 
     const tr = document.createElement('tr');
-    tr.className = 'hover:bg-white/5 transition-colors';
-    tr.innerHTML = `
-        <td class="px-4 py-3 text-slate-300">${translations[currentLang][key]}</td>
-        <td class="px-4 py-3 text-right font-mono text-teal-400">${excel}</td>
-        <td class="px-4 py-3 text-right text-slate-400">${dateStr}</td>
-    `;
+    tr.className = 'hover:bg-slate-50 dark:hover:bg-white/5 transition-colors';
+
+    // Safe DOM creation without innerHTML to prevent XSS
+    const td1 = document.createElement('td');
+    td1.className = 'px-4 py-3 text-slate-700 dark:text-slate-300';
+    td1.textContent = translations[currentLang][key];
+
+    const td2 = document.createElement('td');
+    td2.className = 'px-4 py-3 text-right font-mono text-teal-600 dark:text-teal-400';
+    td2.textContent = excel;
+
+    const td3 = document.createElement('td');
+    td3.className = 'px-4 py-3 text-right text-slate-600 dark:text-slate-400';
+    td3.textContent = dateStr;
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+
     return tr;
 }
 
@@ -350,6 +420,15 @@ function renderTables() {
     pastRows.forEach(key => pastTableBody.appendChild(createRow(key)));
     futureRows.forEach(key => futureTableBody.appendChild(createRow(key)));
 }
+
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    localStorage.theme = isDark ? 'dark' : 'light';
+    logToGoogle(`ThemeSwitch:${isDark ? 'dark' : 'light'}`);
+});
 
 // Init
 updateLanguage();
