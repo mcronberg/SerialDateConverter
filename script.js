@@ -7,14 +7,17 @@ const futureTableBody = document.getElementById('futureTableBody');
 const copyExcelBtn = document.getElementById('copyExcelBtn');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '1.7';
+const VERSION = '1.8';
 
 // State
-let currentLang = 'en';
-if (navigator.language.startsWith('da')) currentLang = 'da';
-else if (navigator.language.startsWith('no') || navigator.language.startsWith('nb') || navigator.language.startsWith('nn')) currentLang = 'no';
-else if (navigator.language.startsWith('sv')) currentLang = 'sv';
-else if (navigator.language.startsWith('de')) currentLang = 'de';
+let currentLang = localStorage.language || 'en';
+// If no stored language, detect from browser
+if (!localStorage.language) {
+    if (navigator.language.startsWith('da')) currentLang = 'da';
+    else if (navigator.language.startsWith('no') || navigator.language.startsWith('nb') || navigator.language.startsWith('nn')) currentLang = 'no';
+    else if (navigator.language.startsWith('sv')) currentLang = 'sv';
+    else if (navigator.language.startsWith('de')) currentLang = 'de';
+}
 
 // Analytics Config
 const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScSDy6fpUQ6qRHeKkCBubmmWRaBYk62YSQTQgWi4OfjHip8yQ/formResponse';
@@ -318,6 +321,7 @@ document.querySelectorAll('.lang-option').forEach(btn => {
         const selectedLang = btn.getAttribute('data-lang');
         if (selectedLang) {
             currentLang = selectedLang;
+            localStorage.language = currentLang;
             updateLanguage();
             logToGoogle(`LanguageSwitch:${currentLang}`);
             langMenu.classList.add('hidden');
