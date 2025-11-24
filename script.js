@@ -7,7 +7,7 @@ const futureTableBody = document.getElementById('futureTableBody');
 const copyExcelBtn = document.getElementById('copyExcelBtn');
 
 // Version (IMPORTANT: Also update VERSION in sw.js when changing this!)
-const VERSION = '2.0';
+const VERSION = '1.91';
 
 // State
 let currentLang = localStorage.language || 'en';
@@ -36,6 +36,7 @@ const translations = {
         labelExcel: 'Excel Serial Number',
         labelDate: 'Date & Time',
         quickReference: 'Quick Reference',
+        quickReferenceHelp: '(click to copy serial date)',
         colDescription: 'Description',
         colExcel: 'Excel',
         colDate: 'Date',
@@ -60,6 +61,7 @@ const translations = {
         labelExcel: 'Excel Serienummer',
         labelDate: 'Dato & Tid',
         quickReference: 'Hurtig Reference',
+        quickReferenceHelp: '(klik for at kopiere seriedato)',
         colDescription: 'Beskrivelse',
         colExcel: 'Excel',
         colDate: 'Dato',
@@ -84,6 +86,7 @@ const translations = {
         labelExcel: 'Excel Serienummer',
         labelDate: 'Datum & Tid',
         quickReference: 'Snabbreferens',
+        quickReferenceHelp: '(klicka för att kopiera seriedatum)',
         colDescription: 'Beskrivning',
         colExcel: 'Excel',
         colDate: 'Datum',
@@ -108,6 +111,7 @@ const translations = {
         labelExcel: 'Excel Seriennummer',
         labelDate: 'Datum & Uhrzeit',
         quickReference: 'Schnellreferenz',
+        quickReferenceHelp: '(klicken um Seriennummer zu kopieren)',
         colDescription: 'Beschreibung',
         colExcel: 'Excel',
         colDate: 'Datum',
@@ -132,6 +136,7 @@ const translations = {
         labelExcel: 'Excel Serienummer',
         labelDate: 'Dato & Tid',
         quickReference: 'Hurtigreferanse',
+        quickReferenceHelp: '(klikk for å kopiere seriedato)',
         colDescription: 'Beskrivelse',
         colExcel: 'Excel',
         colDate: 'Dato',
